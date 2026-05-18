@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion — Let's Collect{% endblock %}
+
+{% block body %}
+<p style="text-align:center; margin-top:1rem; font-size:13px; color:var(--lc-muted);">
+  Pas encore de compte ?
+  <a href="{{ path('app_register') }}" style="color:#D4537E;">S'inscrire</a>
+</p>
+<div style="max-width:400px; margin:80px auto; padding:2rem;">
+
+    <h1 style="text-align:center; margin-bottom:2rem;">Connexion</h1>
+
+    {% if error %}
+        <div style="background:#FEE2E2; color:#991B1B; padding:1rem; border-radius:8px; margin-bottom:1rem;">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ path('app_login') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <div style="margin-bottom:1rem;">
+            <label for="email">Email</label><br>
+            <input type="email" id="email" name="email"
+                   value="{{ last_email }}"
+                   required autofocus
+                   style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:6px;">
+        </div>
+
+        <div style="margin-bottom:1.5rem;">
+            <label for="mot_de_passe">Mot de passe</label><br>
+            <input type="password" id="mot_de_passe" name="mot_de_passe"
+                   required
+                   style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:6px;">
+        </div>
+
+        <button type="submit"
+                style="width:100%; padding:0.75rem; background:#1A56DB; color:white; border:none; border-radius:6px; font-size:1rem; cursor:pointer;">
+            Se connecter
+        </button>
+    </form>
+
+</div>
+{% endblock %}

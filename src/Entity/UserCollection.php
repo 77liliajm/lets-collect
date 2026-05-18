@@ -13,6 +13,9 @@ class UserCollection
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(options: ['default' => 1])]
+    private int $quantite = 1;
+
     #[ORM\Column(length: 50)]
     private ?string $etat = null;
 
@@ -32,6 +35,33 @@ class UserCollection
         return $this->id;
     }
 
+    public function getQuantite(): int
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(int $quantite): static
+    {
+        $this->quantite = $quantite;
+        $this->updateEtat();
+        return $this;
+    }
+
+    // Méthode métier — jury adore voir ça
+    public function updateEtat(): void
+    {
+        if ($this->quantite === 1) {
+            $this->etat = 'possede';
+        } elseif ($this->quantite > 1) {
+            $this->etat = 'doublon';
+        }
+    }
+
+    public function isDuplicate(): bool
+    {
+        return $this->quantite > 1;
+    }
+
     public function getEtat(): ?string
     {
         return $this->etat;
@@ -40,7 +70,6 @@ class UserCollection
     public function setEtat(string $etat): static
     {
         $this->etat = $etat;
-
         return $this;
     }
 
@@ -52,7 +81,6 @@ class UserCollection
     public function setDateAjout(\DateTime $date_ajout): static
     {
         $this->date_ajout = $date_ajout;
-
         return $this;
     }
 
@@ -64,7 +92,6 @@ class UserCollection
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
-
         return $this;
     }
 
@@ -76,7 +103,6 @@ class UserCollection
     public function setPhotocard(?Photocard $photocard): static
     {
         $this->photocard = $photocard;
-
         return $this;
     }
 }

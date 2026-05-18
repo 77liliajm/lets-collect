@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche de cartes — Let's Collect{% endblock %}
+
+{% block body %}
+
+<h1 class="section-header">Recherche de photocards</h1>
+
+<form method="get" action="{{ path('app_recherche') }}" class="search-bar">
+    <input type="text" name="terme" placeholder="Rechercher une carte, un idol, un album..."
+           value="{{ terme }}">
+
+    <select name="groupe" onchange="this.form.submit()">
+        <option value="">Tous les groupes</option>
+        {% for groupe in groupes %}
+            <option value="{{ groupe.id }}" {{ groupeId == groupe.id ? 'selected' : '' }}>
+                {{ groupe.nom }}
+            </option>
+        {% endfor %}
+    </select>
+
+    {% if idols is not empty %}
+    <select name="idol" onchange="this.form.submit()">
+        <option value="">Tous les membres</option>
+        {% for idol in idols %}
+            <option value="{{ idol.id }}" {{ idolId == idol.id ? 'selected' : '' }}>
+                {{ idol.nomScene }}
+            </option>
+        {% endfor %}
+    </select>
+    {% endif %}
+
+    <button type="submit" class="btn-primary">Rechercher</button>
+</form>
+
+{% if photocards is empty %}
+    <p style="color: var(--lc-muted); text-align:center; margin-top:3rem;">
+        Aucune photocard trouvée. Essaie un autre terme !
+    </p>
+{% else %}
+    <p style="font-size:13px; color:var(--lc-muted); margin-bottom:1rem;">
+        {{ photocards|length }} carte(s) trouvée(s)
+    </p>
+    <div class="card-grid">
+        {% for photocard in photocards %}
+        <div class="photocard">
+            <div class="photocard-img">
+                {% if photocard.image %}
+                    <img src="{{ asset(photocard.image) }}" alt="{{ photocard.nomSet }}"
+                         style="width:100%; height:100%; object-fit:cover;">
+                {% else %}
+                    🃏
+                {% endif %}
+            </div>
+            <div class="photocard-body">
+                <div class="photocard-name">{{ photocard.nomSet }}</div>
+                <div class="photocard-actions">
+                    {% if app.user %}
+                        <button class="heart-btn" data-id="{{ photocard.id }}">♡</button>
+                        <div class="counter">
+                            <button class="btn-minus" data-id="{{ photocard.id }}">−</button>
+                            <span class="count" id="count-{{ photocard.id }}">0</span>
+                            <button class="btn-plus" data-id="{{ photocard.id }}">+</button>
+                        </div>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" style="font-size:12px; color:var(--lc-muted);">
+                            Connecte-toi pour collecter
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}

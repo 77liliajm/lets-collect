@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma wishlist — Let's Collect{% endblock %}
+
+{% block body %}
+
+<h1 class="section-header">Ma wishlist 🤍</h1>
+
+{% if items is empty %}
+    <p style="color:var(--lc-muted); text-align:center; margin-top:3rem;">
+        Ta wishlist est vide ! <a href="{{ path('app_recherche') }}">Recherche des cartes</a>
+        et clique sur le cœur pour les ajouter.
+    </p>
+{% else %}
+    {% for groupeNom, wishlistItems in items %}
+        <div class="group-title">{{ groupeNom }}</div>
+        <div class="card-grid" style="margin-bottom:1.5rem;">
+            {% for item in wishlistItems %}
+            <div class="photocard">
+                <div class="photocard-img">
+                    {% if item.photocard.image %}
+                        <img src="{{ asset(item.photocard.image) }}"
+                             alt="{{ item.photocard.nomSet }}"
+                             style="width:100%; height:100%; object-fit:cover;">
+                    {% else %}
+                        🃏
+                    {% endif %}
+                </div>
+                <div class="photocard-body">
+                    <div class="photocard-name">
+                        {% for idol in item.photocard.idols %}
+                            {{ idol.nomScene }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="photocard-group">{{ item.photocard.nomSet }}</div>
+                    <div class="photocard-actions">
+                        <button class="heart-btn active"
+                                data-id="{{ item.photocard.id }}"
+                                title="Retirer de la wishlist">
+                            ♥
+                        </button>
+                        <span style="font-size:11px; color:var(--lc-muted);">
+                            {{ item.dateAjout ? item.dateAjout|date('d/m/Y') : '' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

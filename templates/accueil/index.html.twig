@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Let's Collect{% endblock %}
+
+{% block body %}
+<div style="max-width:700px; margin:80px auto; padding:2rem; text-align:center;">
+
+    <h1 style="font-size:2.5rem; font-weight:500; color:var(--lc-pink-dd); margin-bottom:1rem;">
+        Bienvenue sur <strong>Let's Collect</strong> ✨
+    </h1>
+
+    <p style="font-size:1.1rem; color:var(--lc-muted); line-height:1.8; margin-bottom:2rem;">
+        La plateforme dédiée aux collectionneurs de photocards K-POP.<br>
+        Gérez votre collection, complétez votre wishlist et organisez vos échanges
+        avec d'autres collectionneurs.
+    </p>
+
+    {% if app.user %}
+        <p style="color:var(--lc-pink-dd); background:var(--lc-rose); padding:1rem 1.5rem; border-radius:12px; border:1px solid var(--lc-border); display:inline-block;">
+            Bonjour <strong>{{ app.user.pseudo }}</strong> ! 👋 Bonne collection !
+        </p>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche d'échange — Let's Collect{% endblock %}
+
+{% block body %}
+
+<h1 class="section-header">Recherche d'échange 🔄</h1>
+
+<form method="get" action="{{ path('app_echange') }}" class="search-bar">
+    <select name="groupe" onchange="this.form.submit()">
+        <option value="">Tous les groupes</option>
+        {% for groupe in groupes %}
+            <option value="{{ groupe.id }}" {{ groupeId == groupe.id ? 'selected' : '' }}>
+                {{ groupe.nom }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn-primary">Filtrer</button>
+</form>
+
+{% if profils is empty %}
+    <p style="color:var(--lc-muted); text-align:center; margin-top:3rem;">
+        Aucun profil compatible trouvé.<br>
+        Assure-toi d'avoir des doublons et une wishlist renseignée !
+    </p>
+{% else %}
+    <p style="font-size:13px; color:var(--lc-muted); margin-bottom:1.5rem;">
+        {{ profils|length }} profil(s) compatible(s) trouvé(s) — trié(s) par compatibilité
+    </p>
+
+    {% for profil in profils %}
+    <div style="background:#fff; border:1px solid var(--lc-border); border-radius:14px; padding:1.25rem; margin-bottom:1rem;">
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:44px; height:44px; border-radius:50%; background:var(--lc-pink); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:500; color:var(--lc-pink-dd);">
+                    {{ profil.user.pseudo|first|upper }}
+                </div>
+                <div>
+                    <div style="font-weight:500; color:var(--lc-text);">{{ profil.user.pseudo }}</div>
+                    <div style="font-size:12px; color:var(--lc-muted);">{{ profil.user.ville ?? 'Ville non renseignée' }}</div>
+                </div>
+            </div>
+            <div style="background:var(--lc-rose); border:1px solid var(--lc-border); border-radius:99px; padding:6px 16px; font-size:13px; font-weight:500; color:var(--lc-pink-dd);">
+                ✨ Score {{ profil.score }}
+            </div>
+        </div>
+
+        <div style="font-size:12px; color:var(--lc-muted); margin-bottom:8px;">
+            {{ profil.nbDoublons }} doublon(s) disponible(s) •
+            {{ profil.cartesQueJeVeux|length }} carte(s) qui t'intéressent
+        </div>
+
+        {% if profil.cartesQueJeVeux is not empty %}
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            {% for uc in profil.cartesQueJeVeux %}
+            <div style="background:var(--lc-rose); border:1px solid var(--lc-border); border-radius:10px; padding:6px 10px; font-size:12px; color:var(--lc-text);">
+                {% for idol in uc.photocard.idols %}
+                    {{ idol.nomScene }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                <span style="color:var(--lc-muted);">
+                    — ×{{ uc.quantite }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div style="margin-top:1rem;">
+            <a href="mailto:{{ profil.user.email }}"
+               style="padding:8px 20px; background:var(--lc-pink-d); color:#fff; border-radius:99px; text-decoration:none; font-size:13px; font-weight:500;">
+                Contacter {{ profil.user.pseudo }}
+            </a>
+        </div>
+
+    </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
